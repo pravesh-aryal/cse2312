@@ -43,4 +43,26 @@ int main (void){
 
 }
 
+void checkForDuplicate(current_name, current_fruit, current_count){
+    for (int i = 0; i < 10; i++){
+        if (strcmp(persons[i], currentName) == 0){
+            //if in our array of persons the person already exists
+            for (int j = 0; j < 10; j++){
 
+                if (strcmp(fruits[j].name, current_fruit) == 0){
+                    //if for that the person the fruit exists
+                    fruit.count += current_count;
+                }
+                else{
+                //add fruit for that particular person and assign the count
+                }
+            }
+}
+        else{
+            //add that person, add the fruit, add the count
+}
+    }
+
+
+
+}
