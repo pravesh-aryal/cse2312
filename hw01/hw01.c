@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 struct Fruit {
     char name[20];
     int fruitCount; 
@@ -15,11 +14,19 @@ struct Fruit {
 struct Person{
     int name[21];
     struct Fruit fruits[100];
+    int fruitCount;
 };
+
+void addPerson(struct Person persons[], int personCount, char *currentName, char *currentFruit, int *currentFruitCountPtr);
+void addFruit(struct Person currentPerson);
+
+//expecting at least there will be one person
+int totalPersonCount = 1;
 
 
 int main (void){
-    struct Person persons[20];
+
+    struct Person persons[totalPersonCount];
     char line[1024];
     FILE *dataFile = fopen("data.csv", "r");
     printf("Hello world\n");
@@ -35,34 +42,48 @@ int main (void){
         printf("%s \n", line);
         char *name = strtok(line, ",");
         char *fruit = strtok(NULL, ",");
-        char *count = strtok(NULL, ",");
-        printf("Name:%s, Fruit %s, Count %s", name, fruit, count);
+        char *fruitCountStr = strtok(NULL, ",");
+        int fruitCount = atoi(fruitCountStr);
+        int *fruitCountPtr = &fruitCount;
+        printf("Name:%s, Fruit %s, Count %d", name, fruit, fruitCount);
+        addPerson(persons, totalPersonCount, name, fruit, fruitCountPtr);
+        totalPersonCount++;
         }
 
     return 0;
 
 }
 
-void checkForDuplicate(current_name, current_fruit, current_count){
-    for (int i = 0; i < 10; i++){
-        if (strcmp(persons[i], currentName) == 0){
-            //if in our array of persons the person already exists
-            for (int j = 0; j < 10; j++){
+void addPerson(struct Person persons[], int personCount, char *currentName, char *currentFruit, int *currentFruitCountPtr){
+    //see if the person is on the persons array
+    for (int i = 0; i < personCount; i++){
+        //if the person already exists in our array
+        if (strcmp(persons[i].name, currentName) == 0){
 
-                if (strcmp(fruits[j].name, current_fruit) == 0){
-                    //if for that the person the fruit exists
-                    fruit.count += current_count;
-                }
-                else{
-                //add fruit for that particular person and assign the count
-                }
-            }
-}
-        else{
-            //add that person, add the fruit, add the count
-}
+        }
+        //if the person is new
+        else {
+            strcpy(persons[i].name, currentName);
+            addFruit(persons[i]);
+        }
     }
 
+}
 
+//function to add fruit name and update count for a particular person
 
+void addFruit(struct Person *currentPerson, char *currentFruit, int currentFruitCount) {
+    // Check if the fruit name already exists for the particular person and update its count
+    for (int i = 0; i < currentPerson->fruitCount; i++) {
+        if (strcmp(currentPerson->fruits[i].name, currentFruit) == 0) {
+            // Fruit exists, update the count
+            currentPerson->fruits[i].fruitCount += currentFruitCount;
+            return;
+        }
+    }
+
+    // if the fruit DNE, add the fruit, update the count
+    strcpy(currentPerson->fruits[currentPerson->fruitCount].name, currentFruit);
+    currentPerson->fruits[currentPerson->fruitCount].fruitCount = currentFruitCount;
+    currentPerson->fruitCount++;
 }
