@@ -19,10 +19,16 @@ struct Person{
 
 void addPerson(struct Person persons[], int *personCount, char *currentName, char *currentFruit, int currentFruitCount);
 void addFruit(struct Person *currentPerson, char *currentFruit, int currentFruitCount);
+int getFruitCount(struct Person *currentPerson, char *currentFruit);
 
 //expecting at least there will be one person
 int totalPersonCount = 0;
 
+int comparePersons(const void *a, const void *b) {
+    struct Person *personA = (struct Person *)a;
+    struct Person *personB = (struct Person *)b;
+    return strcmp(personA->name, personB->name);
+}
 
 int main (void){
 
@@ -50,16 +56,13 @@ int main (void){
         }
         fclose(dataFile);
 
-        for (int i = 0; i < totalPersonCount; i++) {
-        // Print person's name
-        printf("Person: %s\n", persons[i].name);
+        qsort(persons, totalPersonCount, sizeof(struct Person), comparePersons);
 
-        // Print each fruit and its count
-        printf("Fruits:\n");
-        for (int j = 0; j < persons[i].fruitCount; j++) {
-            printf("  Fruit: %s, Count: %d\n", persons[i].fruits[j].name, persons[i].fruits[j].fruitCount);
-        }
-        printf("\n");  // Separate persons with a newline
+        for (int i = 0; i < totalPersonCount; i++) {
+
+            printf("%-20.20s%8.8s = %2d\n", persons[i].name, "apples", getFruitCount(&persons[i], "apples"));
+            printf("%-20.20s%8.8s = %2d\n", "", "bananas", getFruitCount(&persons[i], "bananas"));
+            printf("%-20.20s%8.8s = %2d\n", "", "oranges", getFruitCount(&persons[i], "oranges"));
     }
     return 0;
 
@@ -87,6 +90,7 @@ void addFruit(struct Person *currentPerson, char *currentFruit, int currentFruit
 
 
     // Check if the fruit name already exists for the particular person and update its count
+    //add all the fruits and initialize their count to 0 since we want to print the 0 count too.
     for (int i = 0; i < currentPerson->fruitCount; i++){
         if (strcmp(currentPerson->fruits[i].name, currentFruit) == 0){
             //if fruit exists update the count
@@ -95,9 +99,23 @@ void addFruit(struct Person *currentPerson, char *currentFruit, int currentFruit
         }
     }
 
-    //add a new fruit for that person
+    currentPerson->fruitCount++;//add a new fruit for that person
     strcpy(currentPerson->fruits[currentPerson->fruitCount].name, currentFruit);
     currentPerson->fruits[currentPerson->fruitCount].fruitCount = currentFruitCount;
     currentPerson->fruitCount++;
 
+}
+
+
+int getFruitCount(struct Person *currentPerson, char *currentFruit){
+    //check for all fruits.
+    for (int i = 0; i < currentPerson->fruitCount; i++) {
+        if (strcmp(currentPerson->fruits[i].name, currentFruit) == 0) {
+            // If the fruit matches, print the count and return it
+            return currentPerson->fruits[i].fruitCount;
+        }
+    }
+    
+    // If no matching fruit is found, return 0
+    return 0;
 }
