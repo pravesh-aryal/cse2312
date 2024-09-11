@@ -28,3 +28,7 @@ update:
 
 update2:
     add    r0, r0, #20 // r0 = r0 + 20
+
+end: 
+    mov r7, #1
+    swi 0
